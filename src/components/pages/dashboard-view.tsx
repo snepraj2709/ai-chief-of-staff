@@ -4,6 +4,8 @@ import {
   ChevronRight,
   Zap,
   Plus,
+  X,
+  ArrowRight,
   Eye,
   TriangleAlert as AlertTriangle,
 } from "lucide-react"
@@ -450,34 +452,161 @@ function BlockerLane() {
   )
 }
 
+// ─── Collapsible Dashboard Panels ────────────────────────────────────────────
+
+function MorningBriefCard({ onClose }: { onClose: () => void }) {
+  return (
+    <section className="relative rounded-xl border border-primary/20 bg-card px-4 py-4 shadow-sm shadow-primary/5 sm:px-5">
+      <button
+        type="button"
+        aria-label="Close morning brief"
+        onClick={onClose}
+        className="absolute right-4 top-4 inline-flex h-7 w-7 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+      >
+        <X className="h-4 w-4" aria-hidden="true" />
+      </button>
+
+      <div className="flex flex-wrap items-center gap-2 pr-8">
+        <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-primary/20 text-primary">
+          <Zap className="h-4 w-4" aria-hidden="true" />
+        </span>
+        <h2 className="text-base font-semibold text-foreground">Morning Brief</h2>
+        <span className="rounded-md border border-primary/25 bg-primary/10 px-2 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wider text-primary">
+          AI GENERATED · 07:00
+        </span>
+      </div>
+
+      <div className="mt-4 flex flex-col gap-2 text-sm leading-relaxed text-muted-foreground">
+        <p>
+          <span className="mr-1 inline-flex h-3.5 w-3.5 rounded-full bg-[#EF4444] align-[-2px] shadow-[0_0_10px_rgba(239,68,68,0.6)]" />
+          <span className="font-semibold text-foreground">Series B:</span> Legal redlines unresolved for 48h.
+          Wilson Sonsini needs a response by EOD. Decision required on valuation cap.
+        </p>
+        <p>
+          <span className="mr-1 inline-flex h-3.5 w-3.5 rounded-full bg-[#FACC15] align-[-2px] shadow-[0_0_10px_rgba(250,204,21,0.5)]" />
+          <span className="font-semibold text-foreground">Q3 Budget:</span> $142K variance flagged. Raj M.
+          has the actuals — no action taken yet. Finance agent is blocked.
+        </p>
+        <p>
+          <span className="mr-1 inline-flex h-3.5 w-3.5 rounded-full bg-[#22C55E] align-[-2px] shadow-[0_0_10px_rgba(34,197,94,0.5)]" />
+          <span className="font-semibold text-foreground">GTM Playbook v2:</span> AI CoS completed territory
+          split draft. Ready for your review. Tom R. aligned.
+        </p>
+        <p className="flex gap-1.5">
+          <Zap className="mt-1 h-3.5 w-3.5 shrink-0 text-[#FACC15]" aria-hidden="true" />
+          <span>
+            <span className="font-semibold text-foreground">Your focus today:</span> 1) Approve Series B
+            counter, 2) Unblock budget with Raj, 3) Review board deck narrative (Sara).
+          </span>
+        </p>
+      </div>
+    </section>
+  )
+}
+
+function InputCard({
+  value,
+  onChange,
+  onClose,
+  onCancel,
+}: {
+  value: string
+  onChange: (value: string) => void
+  onClose: () => void
+  onCancel: () => void
+}) {
+  return (
+    <section className="relative rounded-xl border border-border bg-card px-4 py-4 sm:px-5">
+      <button
+        type="button"
+        aria-label="Close input card"
+        onClick={onClose}
+        className="absolute right-4 top-4 inline-flex h-7 w-7 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+      >
+        <X className="h-4 w-4" aria-hidden="true" />
+      </button>
+
+      <h2 className="pr-8 text-base font-semibold text-foreground">Give the AI a directive</h2>
+      <textarea
+        aria-label="AI directive"
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+        placeholder="e.g. Draft a counter to Wilson Sonsini on the valuation cap. Keep it firm but collaborative."
+        className="mt-4 min-h-24 w-full resize-none rounded-xl border border-border bg-background px-4 py-3 text-sm leading-relaxed text-foreground outline-none transition-colors placeholder:font-mono placeholder:text-xs placeholder:text-muted-foreground focus:border-primary/60 focus:ring-2 focus:ring-primary/20"
+      />
+
+      <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <span className="font-mono text-[11px] text-muted-foreground">{value.length} chars</span>
+        <div className="flex items-center justify-end gap-2">
+          <button
+            type="button"
+            onClick={onCancel}
+            className="inline-flex min-h-9 items-center rounded-full bg-secondary px-4 text-xs font-semibold text-muted-foreground transition-colors hover:bg-secondary/80 hover:text-foreground"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            className="inline-flex min-h-9 items-center gap-1.5 rounded-full bg-primary px-4 text-xs font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
+          >
+            <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+            Send to AI
+          </button>
+        </div>
+      </div>
+    </section>
+  )
+}
+
 // ─── Main View ────────────────────────────────────────────────────────────────
 
 export function DashboardView() {
+  const [showMorningBrief, setShowMorningBrief] = useState(false)
+  const [showInput, setShowInput] = useState(false)
+  const [inputText, setInputText] = useState("")
   const today = new Date()
   const dayName = today.toLocaleDateString("en-US", { weekday: "long" })
   const monthDay = today.toLocaleDateString("en-US", { month: "short", day: "numeric" })
+  const hasOpenPanel = showMorningBrief || showInput
+
+  const handleCancelInput = () => {
+    setInputText("")
+    setShowInput(false)
+  }
 
   return (
     <div className="flex h-full min-h-0 flex-col overflow-y-auto p-4 lg:overflow-hidden xl:p-5">
       {/* Page header */}
-      <div className="flex shrink-0 items-start justify-between gap-4">
+      <div className="flex shrink-0 flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
         <div>
           <h1 className="text-xl font-bold tracking-tight text-foreground xl:text-2xl">AI Chief of Staff</h1>
           <p className="mt-0.5 text-sm text-muted-foreground">
             {dayName} {monthDay} · Good morning. Here is what matters today.
           </p>
         </div>
-        <div className="flex items-center gap-2 flex-shrink-0 mt-1">
+        <div className="mt-1 flex flex-shrink-0 flex-wrap items-center gap-2">
           <button
             type="button"
-            className="inline-flex items-center gap-1.5 rounded-lg border border-primary/30 bg-primary/15 px-3 py-1.5 text-xs font-semibold text-primary transition-colors hover:bg-primary/25"
+            aria-expanded={showMorningBrief}
+            onClick={() => setShowMorningBrief((open) => !open)}
+            className={`inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-semibold transition-colors ${
+              showMorningBrief
+                ? "border-primary/60 bg-primary/25 text-primary shadow-sm shadow-primary/20"
+                : "border-primary/30 bg-primary/15 text-primary hover:bg-primary/25"
+            }`}
           >
             <Zap className="h-3.5 w-3.5" aria-hidden="true" />
             Morning Brief
           </button>
           <button
             type="button"
-            className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
+            aria-expanded={showInput}
+            onClick={() => setShowInput((open) => !open)}
+            className={`inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-semibold transition-colors ${
+              showInput
+                ? "border-primary/60 bg-primary/20 text-primary shadow-sm shadow-primary/20"
+                : "border-transparent bg-primary text-primary-foreground hover:bg-primary/90"
+            }`}
           >
             <Plus className="h-3.5 w-3.5" aria-hidden="true" />
             Input
@@ -485,8 +614,24 @@ export function DashboardView() {
         </div>
       </div>
 
+      {hasOpenPanel && (
+        <div className="mt-4 flex shrink-0 flex-col gap-3">
+          {showMorningBrief && (
+            <MorningBriefCard onClose={() => setShowMorningBrief(false)} />
+          )}
+          {showInput && (
+            <InputCard
+              value={inputText}
+              onChange={setInputText}
+              onClose={() => setShowInput(false)}
+              onCancel={handleCancelInput}
+            />
+          )}
+        </div>
+      )}
+
       {/* Stat cards */}
-      <div className="mt-4 grid shrink-0 grid-cols-5 gap-3">
+      <div className="mt-4 grid shrink-0 grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-5">
         <PrioritiesCard />
         <BigStatCard
           label="Decisions Needed"
