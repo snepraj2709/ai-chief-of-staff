@@ -1,6 +1,8 @@
 import { Cpu, Settings, LogOut } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { navItems, type NavId, type NavBadge } from "@/lib/navigation"
+import { Switch } from "@/app/components/ui/switch"
+import { useState } from "react"
 
 interface SidebarProps {
   activeId: NavId
@@ -20,23 +22,25 @@ const dotTone = {
 }
 
 export function Sidebar({ activeId, onNavigate }: SidebarProps) {
+  const [agentEnabled, setAgentEnabled] = useState(true)
+
   return (
-    <aside className="flex h-full w-[232px] flex-shrink-0 flex-col border-r border-border bg-sidebar">
+    <aside className="flex h-full w-[220px] flex-shrink-0 flex-col border-r border-border bg-sidebar">
       {/* Brand */}
-      <div className="flex items-center gap-2.5 border-b border-border px-5 py-4">
-        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-          <Cpu className="h-4 w-4 text-primary-foreground" aria-hidden="true" />
+      <div className="flex items-center gap-2.5 px-4 py-3.5">
+        <div className="flex h-7 w-7 items-center justify-center rounded-md bg-primary">
+          <Cpu className="h-3.5 w-3.5 text-primary-foreground" aria-hidden="true" />
         </div>
         <div className="min-w-0">
           <p className="text-sm font-bold leading-tight text-foreground">AI Chief of Staff</p>
-          <p className="font-mono text-[10px] text-muted-foreground">v2.4.1 · production</p>
+          <p className="font-mono text-[10px] text-muted-foreground">v2.4.1 · prod</p>
         </div>
       </div>
 
       {/* Primary navigation */}
-      <nav className="flex flex-1 flex-col gap-0.5 overflow-y-auto px-3 py-4" aria-label="Primary">
-        <p className="mb-1 px-2 py-1 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
-          Operating Surface
+      <nav className="flex flex-1 flex-col overflow-y-auto px-2 pb-2" aria-label="Primary">
+        <p className="mb-1 mt-1 px-2 py-1 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
+          Workspace
         </p>
         {navItems.map(({ id, label, icon: Icon, badge, statusDot }) => {
           const isActive = id === activeId
@@ -47,24 +51,24 @@ export function Sidebar({ activeId, onNavigate }: SidebarProps) {
               onClick={() => onNavigate(id)}
               aria-current={isActive ? "page" : undefined}
               className={cn(
-                "group flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-xs font-medium transition-colors",
+                "group flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-[13px] font-medium transition-colors",
                 isActive
-                  ? "border border-primary/25 bg-primary/15 text-primary"
-                  : "border border-transparent text-muted-foreground hover:bg-secondary hover:text-foreground",
+                  ? "bg-primary/15 text-primary"
+                  : "text-muted-foreground hover:bg-secondary hover:text-foreground",
               )}
             >
               <Icon
                 className={cn(
-                  "h-4 w-4 flex-shrink-0",
+                  "h-[15px] w-[15px] flex-shrink-0",
                   isActive ? "text-primary" : "text-muted-foreground group-hover:text-foreground",
                 )}
                 aria-hidden="true"
               />
-              <span className="truncate">{label}</span>
+              <span className="flex-1 truncate">{label}</span>
               {badge && (
                 <span
                   className={cn(
-                    "ml-auto rounded px-1.5 py-0.5 font-mono text-[10px] font-semibold",
+                    "rounded px-1.5 py-0.5 font-mono text-[10px] font-semibold",
                     badgeTone[badge.tone],
                   )}
                 >
@@ -72,29 +76,51 @@ export function Sidebar({ activeId, onNavigate }: SidebarProps) {
                 </span>
               )}
               {statusDot && (
-                <span className={cn("ml-auto h-1.5 w-1.5 rounded-full", dotTone[statusDot])} />
+                <span className={cn("h-1.5 w-1.5 rounded-full", dotTone[statusDot])} />
               )}
             </button>
           )
         })}
+
+        {/* System section */}
+        <p className="mb-1 mt-3 px-2 py-1 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
+          System
+        </p>
+        <button
+          type="button"
+          className="group flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-[13px] font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+        >
+          <Settings className="h-[15px] w-[15px] flex-shrink-0" aria-hidden="true" />
+          <span className="truncate">Settings</span>
+        </button>
       </nav>
 
       {/* Footer */}
       <div className="border-t border-border px-3 py-3">
-        <button
-          type="button"
-          className="group flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-xs font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
-        >
-          <Settings className="h-4 w-4 flex-shrink-0" aria-hidden="true" />
-          Settings
-        </button>
-        <div className="mt-1 flex items-center gap-2.5 rounded-lg px-2.5 py-2">
-          <span className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-primary font-mono text-[11px] font-bold text-primary-foreground">
-            AV
+        {/* AI Agent toggle */}
+        <div className="mb-2 flex items-center justify-between rounded-md px-1 py-1">
+          <div className="flex items-center gap-2">
+            <span className="h-2 w-2 rounded-full bg-[#10B981] shadow-[0_0_6px_#10B981]" />
+            <span className="text-xs font-semibold text-foreground">AI Agent</span>
+          </div>
+          <Switch
+            checked={agentEnabled}
+            onCheckedChange={setAgentEnabled}
+            aria-label="Toggle AI Agent"
+          />
+        </div>
+        <p className="mb-3 px-1 font-mono text-[10px] text-muted-foreground">
+          24 actions taken today
+        </p>
+
+        {/* User row */}
+        <div className="flex items-center gap-2 rounded-md px-1 py-1">
+          <span className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-[#F59E0B] font-mono text-[11px] font-bold text-black">
+            YO
           </span>
           <div className="min-w-0 flex-1">
-            <p className="truncate text-xs font-semibold text-foreground">Alex Vance</p>
-            <p className="truncate font-mono text-[10px] text-muted-foreground">CEO · Northwind</p>
+            <p className="truncate text-xs font-semibold text-foreground">You (Owner)</p>
+            <p className="truncate font-mono text-[10px] text-muted-foreground">CEO · Ops workspace</p>
           </div>
           <button
             type="button"

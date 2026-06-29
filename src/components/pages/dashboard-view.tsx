@@ -1,281 +1,347 @@
-import { useState } from "react"
-import { AlertTriangle } from "lucide-react"
-import { Button } from "@/app/components/ui/button"
-import { Card } from "@/app/components/ui/card"
-import {
-  Table,
-  TableHeader,
-  TableBody,
-  TableRow,
-  TableHead,
-  TableCell,
-} from "@/app/components/ui/table"
-import { ToggleGroup, ToggleGroupItem } from "@/app/components/ui/toggle-group"
-import { MetricCard } from "@/components/ui/metric-card"
+import { Zap, Plus, Eye, TriangleAlert as AlertTriangle } from "lucide-react"
 
-// ─── Data ────────────────────────────────────────────────────────────────────
+// ─── Stat Cards ──────────────────────────────────────────────────────────────
 
-const STAT_CARDS = [
-  {
-    label: "Top Priorities",
-    value: "3",
-    caption: "Active workstreams",
-    valueClassName: "text-foreground",
-  },
-  {
-    label: "Decisions Needed",
-    value: "3",
-    caption: "Awaiting your input",
-    valueClassName: "text-[var(--chart-3)]",
-  },
-  {
-    label: "Blocked",
-    value: "2",
-    caption: "Workstreams stalled",
-    valueClassName: "text-[var(--destructive)]",
-  },
-  {
-    label: "Agents at Risk",
-    value: "1",
-    caption: "Needs review",
-    valueClassName: "text-[var(--destructive)]",
-  },
-  {
-    label: "Cost Today",
-    value: "$24.80",
-    caption: "Within daily budget",
-    valueClassName: "text-[var(--chart-2)]",
-  },
-]
+function PrioritiesCard() {
+  return (
+    <div className="flex flex-col gap-3 rounded-xl border border-border bg-card px-4 py-4">
+      <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
+        Top 3 Priorities
+      </span>
+      <div className="flex flex-col gap-1.5">
+        {[
+          { p: "P1", label: "Series B Close" },
+          { p: "P2", label: "Q3 Budget" },
+          { p: "P3", label: "GTM v2" },
+        ].map(({ p, label }) => (
+          <div key={p} className="flex items-center gap-2">
+            <span className="font-mono text-[10px] font-bold text-muted-foreground w-5">{p}</span>
+            <span className="text-xs font-medium text-foreground">{label}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
 
-const WORKSTREAMS = [
+function BigStatCard({
+  label,
+  value,
+  caption,
+  valueColor,
+}: {
+  label: string
+  value: string
+  caption: string
+  valueColor: string
+}) {
+  return (
+    <div className="flex flex-col gap-2 rounded-xl border border-border bg-card px-4 py-4">
+      <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
+        {label}
+      </span>
+      <span className={`font-mono text-3xl font-bold leading-none ${valueColor}`}>{value}</span>
+      <span className="font-mono text-[10px] text-muted-foreground">{caption}</span>
+    </div>
+  )
+}
+
+// ─── Workstreams Table ───────────────────────────────────────────────────────
+
+interface Workstream {
+  priority: string
+  name: string
+  ownerInitials: string
+  ownerName: string
+  ownerColor: string
+  agentCount: number
+  agentOnline: boolean
+  status: "on" | "blocked"
+  action: "view" | "decide"
+}
+
+const WORKSTREAMS: Workstream[] = [
   {
     priority: "P1",
-    name: "Close 3 enterprise pilots",
-    owner: "Sarah K",
-    agents: "3 agents",
-    status: "On Track",
-    statusOk: true,
-    blocker: "",
-    action: null,
+    name: "Series B Close",
+    ownerInitials: "SK",
+    ownerName: "Sarah K.",
+    ownerColor: "bg-[#6366F1]",
+    agentCount: 3,
+    agentOnline: true,
+    status: "on",
+    action: "view",
   },
   {
     priority: "P2",
-    name: "Reduce onboarding friction",
-    owner: "Raj M",
-    agents: "2 agents",
-    status: "Blocked",
-    statusOk: false,
-    blocker: "CS Agent waiting on Legal sign-off",
-    action: "resolve",
+    name: "Q3 Budget Sign-off",
+    ownerInitials: "RM",
+    ownerName: "Raj M.",
+    ownerColor: "bg-[#10B981]",
+    agentCount: 1,
+    agentOnline: false,
+    status: "blocked",
+    action: "decide",
   },
   {
     priority: "P3",
-    name: "Q2 market positioning",
-    owner: "AI CoS",
-    agents: "1 agent",
-    status: "On Track",
-    statusOk: true,
-    blocker: "",
-    action: null,
+    name: "GTM Playbook v2",
+    ownerInitials: "AI",
+    ownerName: "AI CoS",
+    ownerColor: "bg-[#F59E0B]",
+    agentCount: 2,
+    agentOnline: true,
+    status: "on",
+    action: "view",
   },
 ]
 
-const FILTER_CHIPS = [
-  { value: "all", label: "All" },
-  { value: "missing-context", label: "Missing Context" },
-  { value: "cross-agent", label: "Cross-Agent" },
-  { value: "decision-needed", label: "Decision Needed" },
-  { value: "budget", label: "Budget" },
-  { value: "safety", label: "Safety" },
-]
+function WorkstreamsTable() {
+  return (
+    <div className="flex flex-col rounded-xl border border-border bg-card overflow-hidden">
+      <div className="flex items-center justify-between gap-2 px-5 py-4 border-b border-border">
+        <div>
+          <h2 className="text-sm font-semibold text-foreground">Active Workstreams</h2>
+          <p className="text-[11px] text-muted-foreground mt-0.5">
+            Agent-managed initiatives · sorted by CEO priority
+          </p>
+        </div>
+        <button
+          type="button"
+          className="inline-flex items-center gap-1 rounded-lg border border-border bg-card px-3 py-1.5 text-xs font-medium text-foreground hover:bg-secondary transition-colors"
+        >
+          <Plus className="h-3 w-3" />
+          Add workstream
+        </button>
+      </div>
+
+      <div className="overflow-x-auto">
+        <table className="w-full">
+          <thead>
+            <tr className="border-b border-border">
+              {["Priority", "Workstream", "Owner", "Agents", "Status", "Action"].map((h) => (
+                <th
+                  key={h}
+                  className="px-5 py-2.5 text-left font-semibold uppercase tracking-widest text-[10px] text-muted-foreground"
+                >
+                  {h}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {WORKSTREAMS.map((ws) => (
+              <tr
+                key={ws.name}
+                className="border-b border-border last:border-0 hover:bg-secondary/30 transition-colors"
+              >
+                <td className="px-5 py-3">
+                  <span className="font-mono text-xs font-bold text-primary">{ws.priority}</span>
+                </td>
+                <td className="px-5 py-3">
+                  <span className="text-sm font-medium text-foreground">{ws.name}</span>
+                </td>
+                <td className="px-5 py-3">
+                  <div className="flex items-center gap-2">
+                    <span
+                      className={`flex h-6 w-6 items-center justify-center rounded-full text-[10px] font-bold text-white ${ws.ownerColor}`}
+                    >
+                      {ws.ownerInitials}
+                    </span>
+                    <span className="text-xs text-foreground">{ws.ownerName}</span>
+                  </div>
+                </td>
+                <td className="px-5 py-3">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-xs text-foreground">{ws.agentCount} agents</span>
+                    <span
+                      className={`h-1.5 w-1.5 rounded-full ${ws.agentOnline ? "bg-[#10B981]" : "bg-[#EF4444]"}`}
+                    />
+                  </div>
+                </td>
+                <td className="px-5 py-3">
+                  {ws.status === "on" ? (
+                    <span className="inline-flex items-center gap-1 rounded-md border border-[#10B981]/30 bg-[#10B981]/10 px-2 py-0.5 font-mono text-[10px] font-bold text-[#10B981]">
+                      <span className="h-1.5 w-1.5 rounded-full bg-[#10B981]" />
+                      ON
+                    </span>
+                  ) : (
+                    <span className="inline-flex items-center gap-1 rounded-md border border-[#EF4444]/30 bg-[#EF4444]/10 px-2 py-0.5 font-mono text-[10px] font-bold text-[#EF4444]">
+                      <span className="h-1.5 w-1.5 rounded-full bg-[#EF4444]" />
+                      BLOCKED
+                    </span>
+                  )}
+                </td>
+                <td className="px-5 py-3">
+                  {ws.action === "view" ? (
+                    <button
+                      type="button"
+                      className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
+                    >
+                      <Eye className="h-3 w-3" />
+                      View
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      className="inline-flex items-center gap-1 rounded-md border border-[#F59E0B]/40 bg-[#F59E0B]/10 px-2 py-1 font-mono text-[10px] font-bold text-[#F59E0B] hover:bg-[#F59E0B]/20 transition-colors"
+                    >
+                      <AlertTriangle className="h-3 w-3" />
+                      DECIDE
+                    </button>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <div className="px-5 py-3 border-t border-border">
+        <span className="font-mono text-[10px] text-muted-foreground">
+          3 active workstreams · 6 total agents deployed · last synced 2 min ago
+        </span>
+      </div>
+    </div>
+  )
+}
+
+// ─── Blocker Lane ────────────────────────────────────────────────────────────
 
 const BLOCKERS = [
   {
-    borderColor: "var(--destructive)",
-    badge: "Cross-Agent",
-    badgeBg: "var(--destructive)",
-    title: "CS Agent \u2194 Legal Agent",
-    body: "Contract threshold dispute \u2014 Finance says $50K limit, Legal says $10K.",
-    buttonLabel: "Resolve",
+    type: "missing-context",
+    tagLabel: "Missing Context",
+    tagClass: "bg-[#F59E0B]/10 border border-[#F59E0B]/30 text-[#F59E0B]",
+    body: "Finance agent needs Q2 actuals from Raj M.",
+    actionLabel: "Provide context",
+    actionClass: "text-[#F59E0B]",
   },
   {
-    borderColor: "var(--chart-3)",
-    badge: "Decision Needed",
-    badgeBg: "var(--chart-3)",
-    title: "ICP Definition Blocked",
-    body: "Marketing Agent cannot proceed. ICP definition required before execution.",
-    buttonLabel: "Decide",
+    type: "cross-agent",
+    tagLabel: "Cross-Agent Conflict",
+    tagClass: "bg-[#EF4444]/10 border border-[#EF4444]/30 text-[#EF4444]",
+    body: "Legal and Ops agents have conflicting timelines on vendor NDA.",
+    actionLabel: "Provide context",
+    actionClass: "text-[#EF4444]",
+  },
+  {
+    type: "decision-needed",
+    tagLabel: "Decision Needed",
+    tagClass: "bg-[#EF4444]/10 border border-[#EF4444]/30 text-[#EF4444]",
+    body: "Series B valuation cap: approve redlines or counter?",
+    actionLabel: "Resolve now",
+    actionClass: "text-[#EF4444]",
   },
 ]
 
-// ─── Component ───────────────────────────────────────────────────────────────
-
-export function DashboardView() {
-  const [activeFilter, setActiveFilter] = useState("all")
-
+function BlockerLane() {
   return (
-    <div className="flex flex-col gap-6 p-6 w-full">
-
-      {/* Section 1 – Priority Drift Alert */}
-      <div
-        className="flex items-center justify-between gap-4 rounded-lg border border-border bg-card px-4 py-3"
-        style={{ borderLeftWidth: "4px", borderLeftColor: "var(--chart-3)" }}
-        role="alert"
-      >
-        <div className="flex items-center gap-3">
-          <AlertTriangle
-            className="h-4 w-4 shrink-0"
-            style={{ color: "var(--chart-3)" }}
-            aria-hidden="true"
-          />
-          <p className="text-sm text-foreground">
-            <span className="font-semibold">Priority Drift Detected</span>
-            {" \u2014 Finance Analyst Agent is running tasks not mapped to your top 3 priorities."}
-          </p>
+    <div className="flex flex-col rounded-xl border border-border bg-card overflow-hidden">
+      <div className="flex items-start justify-between gap-2 px-4 py-4 border-b border-border">
+        <div>
+          <h2 className="text-sm font-semibold text-foreground">Blocker Lane</h2>
+          <p className="text-[11px] text-muted-foreground mt-0.5">Requires CEO resolution</p>
         </div>
-        <Button variant="outline" size="sm" className="shrink-0">
-          Review
-        </Button>
+        <span className="rounded-md bg-[#EF4444]/15 px-2 py-0.5 font-mono text-[10px] font-bold text-[#EF4444]">
+          3 OPEN
+        </span>
       </div>
 
-      {/* Section 2 – Stat Cards */}
-      <div className="grid grid-cols-5 gap-4">
-        {STAT_CARDS.map((card) => (
-          <MetricCard
-            key={card.label}
-            label={card.label}
-            value={card.value}
-            caption={card.caption}
-            valueClassName={card.valueClassName}
-          />
+      <div className="flex flex-col gap-3 p-4">
+        {BLOCKERS.map((blocker) => (
+          <div
+            key={blocker.type}
+            className="rounded-lg border border-border bg-background p-3 flex flex-col gap-2"
+          >
+            <span
+              className={`inline-flex w-fit items-center rounded-md px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${blocker.tagClass}`}
+            >
+              {blocker.tagLabel}
+            </span>
+            <p className="text-xs text-foreground leading-relaxed">{blocker.body}</p>
+            <button
+              type="button"
+              className={`text-[11px] font-semibold text-left transition-opacity hover:opacity-70 ${blocker.actionClass}`}
+            >
+              {blocker.actionLabel} →
+            </button>
+          </div>
         ))}
       </div>
+    </div>
+  )
+}
 
-      {/* Section 3 – Workstreams Table */}
-      <div className="flex flex-col gap-3">
-        <div className="flex items-center justify-between">
-          <h2 className="text-base font-semibold text-foreground">Workstreams</h2>
-          <Button variant="ghost" size="sm">+ New</Button>
+// ─── Main View ────────────────────────────────────────────────────────────────
+
+export function DashboardView() {
+  const today = new Date()
+  const dayName = today.toLocaleDateString("en-US", { weekday: "long" })
+  const monthDay = today.toLocaleDateString("en-US", { month: "short", day: "numeric" })
+
+  return (
+    <div className="flex flex-col gap-5 p-6">
+      {/* Page header */}
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight text-foreground">AI Chief of Staff</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
+            {dayName} {monthDay} · Good morning. Here is what matters today.
+          </p>
         </div>
-
-        <Card className="overflow-hidden gap-0 p-0">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-16 text-xs px-4">Priority</TableHead>
-                <TableHead className="text-xs">Workstream</TableHead>
-                <TableHead className="text-xs">Human Owner</TableHead>
-                <TableHead className="text-xs">AI Agents</TableHead>
-                <TableHead className="text-xs">Status</TableHead>
-                <TableHead className="text-xs">Blocker</TableHead>
-                <TableHead className="text-xs">Action</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {WORKSTREAMS.map((row) => (
-                <TableRow key={row.name}>
-                  <TableCell className="px-4">
-                    <span className="font-mono text-xs font-semibold text-muted-foreground">
-                      {row.priority}
-                    </span>
-                  </TableCell>
-                  <TableCell>
-                    <span className="text-sm font-medium text-foreground">{row.name}</span>
-                  </TableCell>
-                  <TableCell>
-                    <span className="text-sm text-muted-foreground">{row.owner}</span>
-                  </TableCell>
-                  <TableCell>
-                    <span className="font-mono text-xs text-muted-foreground">{row.agents}</span>
-                  </TableCell>
-                  <TableCell>
-                    <span className="flex items-center gap-2 text-sm">
-                      <span
-                        className="inline-block h-2 w-2 rounded-full shrink-0"
-                        style={{
-                          backgroundColor: row.statusOk
-                            ? "var(--chart-2)"
-                            : "var(--destructive)",
-                        }}
-                        aria-hidden="true"
-                      />
-                      {row.status}
-                    </span>
-                  </TableCell>
-                  <TableCell>
-                    <span className="text-sm text-muted-foreground">
-                      {row.blocker || "\u2014"}
-                    </span>
-                  </TableCell>
-                  <TableCell>
-                    {row.action === "resolve" && (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        style={{
-                          color: "var(--chart-3)",
-                          borderColor: "var(--chart-3)",
-                        }}
-                      >
-                        Resolve
-                      </Button>
-                    )}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </Card>
-      </div>
-
-      {/* Section 4 – Blocker Lane */}
-      <div className="flex flex-col gap-3">
-        <h2 className="text-base font-semibold text-foreground">Blocker Lane</h2>
-
-        <ToggleGroup
-          type="single"
-          value={activeFilter}
-          onValueChange={(v) => { if (v) setActiveFilter(v) }}
-          variant="outline"
-          className="flex flex-wrap gap-1.5 justify-start w-full"
-        >
-          {FILTER_CHIPS.map((chip) => (
-            <ToggleGroupItem
-              key={chip.value}
-              value={chip.value}
-              className="rounded-full px-3 text-xs font-medium h-7 data-[state=on]:bg-[var(--primary)] data-[state=on]:text-white data-[state=on]:border-[var(--primary)]"
-            >
-              {chip.label}
-            </ToggleGroupItem>
-          ))}
-        </ToggleGroup>
-
-        <div className="grid grid-cols-2 gap-4">
-          {BLOCKERS.map((blocker) => (
-            <div
-              key={blocker.title}
-              className="flex flex-col gap-3 rounded-lg border border-border bg-card p-4"
-              style={{ borderLeftWidth: "4px", borderLeftColor: blocker.borderColor }}
-            >
-              <span
-                className="inline-flex w-fit items-center rounded-full px-2 py-0.5 text-[11px] font-semibold text-white"
-                style={{ backgroundColor: blocker.badgeBg }}
-              >
-                {blocker.badge}
-              </span>
-              <div className="flex flex-col gap-1">
-                <p className="text-sm font-semibold text-foreground">{blocker.title}</p>
-                <p className="text-sm text-muted-foreground leading-relaxed">{blocker.body}</p>
-              </div>
-              <Button variant="outline" size="sm" className="w-fit">
-                {blocker.buttonLabel}
-              </Button>
-            </div>
-          ))}
+        <div className="flex items-center gap-2 flex-shrink-0 mt-1">
+          <button
+            type="button"
+            className="inline-flex items-center gap-1.5 rounded-lg border border-primary/30 bg-primary/15 px-3 py-1.5 text-xs font-semibold text-primary transition-colors hover:bg-primary/25"
+          >
+            <Zap className="h-3.5 w-3.5" aria-hidden="true" />
+            Morning Brief
+          </button>
+          <button
+            type="button"
+            className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
+          >
+            <Plus className="h-3.5 w-3.5" aria-hidden="true" />
+            Input
+          </button>
         </div>
       </div>
 
+      {/* Stat cards */}
+      <div className="grid grid-cols-5 gap-3">
+        <PrioritiesCard />
+        <BigStatCard
+          label="Decisions Needed"
+          value="3"
+          caption="awaiting your input"
+          valueColor="text-[#F59E0B]"
+        />
+        <BigStatCard
+          label="Blocked"
+          value="2"
+          caption="agents stalled"
+          valueColor="text-[#EF4444]"
+        />
+        <BigStatCard
+          label="Agents at Risk"
+          value="1"
+          caption="Finance · autonomy breach"
+          valueColor="text-[#F59E0B]"
+        />
+        <BigStatCard
+          label="Cost Today"
+          value="$24.80"
+          caption="of $200 daily budget"
+          valueColor="text-[#10B981]"
+        />
+      </div>
+
+      {/* Bottom two-column layout */}
+      <div className="grid grid-cols-[1fr_300px] gap-4">
+        <WorkstreamsTable />
+        <BlockerLane />
+      </div>
     </div>
   )
 }
