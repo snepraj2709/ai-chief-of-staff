@@ -99,7 +99,7 @@ export function FrictionView() {
               </div>
             </div>
             <div className="bg-[var(--primary)]/10 border border-[var(--primary)]/30 rounded p-3 mt-3">
-              <p className="text-xs font-semibold text-[var(--primary)] mb-1">AI CoS Resolution:</p>
+              <p className="text-xs font-semibold text-[var(--primary)] mb-1">Resolution</p>
               <p className="text-sm">Apply $10K approval threshold as the conservative interpretation. Pending CEO confirmation.</p>
             </div>
             <div className="flex gap-2 mt-4 flex-wrap">
@@ -126,7 +126,7 @@ export function FrictionView() {
               Both agents are independently generating competitor pricing analysis with no shared context or coordination. Estimated waste: 4 hours, $18.
             </p>
             <div className="bg-[var(--primary)]/10 border border-[var(--primary)]/30 rounded p-3 mt-3">
-              <p className="text-xs font-semibold text-[var(--primary)] mb-1">AI CoS Resolution:</p>
+              <p className="text-xs font-semibold text-[var(--primary)] mb-1">Resolution</p>
               <p className="text-sm">Merge tasks. Market Research Agent leads full analysis. Marketing Agent reviews and validates final output.</p>
             </div>
             <div className="flex gap-2 mt-4 flex-wrap">

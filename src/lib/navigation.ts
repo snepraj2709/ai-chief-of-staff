@@ -6,13 +6,6 @@ import {
   Brain,
   ShieldCheck,
   FileCheck2,
-  Terminal,
-  ListTodo,
-  FolderOpen,
-  Users,
-  Calendar,
-  MessageCircle,
-  Sparkles,
   type LucideIcon,
 } from "lucide-react"
 
@@ -24,13 +17,6 @@ export type NavId =
   | "operating-brain"
   | "safety"
   | "evidence"
-  | "command-center"
-  | "task-queue"
-  | "projects"
-  | "people"
-  | "calendar"
-  | "communications"
-  | "ai-intelligence"
 
 export type NavBadge = {
   label: string
@@ -50,7 +36,7 @@ export type NavItem = {
 export const navItems: NavItem[] = [
   {
     id: "dashboard",
-    label: "Dashboard",
+    label: "CEO Dashboard",
     title: "CEO Clarity Dashboard",
     description: "Today's priorities, blockers, and AI activity at a glance",
     icon: LayoutDashboard,
@@ -100,57 +86,6 @@ export const navItems: NavItem[] = [
     title: "Accountability & Evidence",
     description: "Audit trail of every agent action with full provenance",
     icon: FileCheck2,
-  },
-  {
-    id: "command-center",
-    label: "Command Center",
-    title: "Command Center",
-    description: "Direct agent instructions and execution monitoring",
-    icon: Terminal,
-  },
-  {
-    id: "task-queue",
-    label: "Task Queue",
-    title: "Task Queue",
-    description: "All pending and in-progress tasks across agents",
-    icon: ListTodo,
-    badge: { label: "47", tone: "neutral" },
-  },
-  {
-    id: "projects",
-    label: "Projects",
-    title: "Projects",
-    description: "Long-running initiatives and project portfolios",
-    icon: FolderOpen,
-  },
-  {
-    id: "people",
-    label: "People & Capacity",
-    title: "People & Capacity",
-    description: "Team capacity, roles, and human-AI collaboration",
-    icon: Users,
-  },
-  {
-    id: "calendar",
-    label: "Calendar",
-    title: "Calendar",
-    description: "Scheduled agent actions and CEO time commitments",
-    icon: Calendar,
-  },
-  {
-    id: "communications",
-    label: "Communications",
-    title: "Communications",
-    description: "Outbound communications drafted or sent by agents",
-    icon: MessageCircle,
-    statusDot: "danger",
-  },
-  {
-    id: "ai-intelligence",
-    label: "AI Intelligence",
-    title: "AI Intelligence",
-    description: "Market signals, news, and competitive intelligence",
-    icon: Sparkles,
   },
 ]
 
