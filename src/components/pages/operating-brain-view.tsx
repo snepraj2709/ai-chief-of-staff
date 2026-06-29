@@ -10,7 +10,7 @@ import { Badge } from "@/app/components/ui/badge"
 import { Checkbox } from "@/app/components/ui/checkbox"
 import { Switch } from "@/app/components/ui/switch"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/app/components/ui/collapsible"
-import { Brain, Target, AlertTriangle, ChevronRight, CheckCircle2 } from "lucide-react"
+import { Brain, Target, TriangleAlert as AlertTriangle, ChevronRight, CircleCheck as CheckCircle2 } from "lucide-react"
 
 type Workstream = {
   name: string
