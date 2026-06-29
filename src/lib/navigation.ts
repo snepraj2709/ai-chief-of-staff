@@ -50,7 +50,7 @@ export type NavItem = {
 export const navItems: NavItem[] = [
   {
     id: "dashboard",
-    label: "CEO Dashboard",
+    label: "Dashboard",
     title: "CEO Clarity Dashboard",
     description: "Today's priorities, blockers, and AI activity at a glance",
     icon: LayoutDashboard,
