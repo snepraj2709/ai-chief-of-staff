@@ -211,7 +211,7 @@ export function EvidenceView() {
           </div>
           <div>
             <div className="font-mono text-xl font-bold" style={{ color: "var(--chart-2)" }}>14</div>
-            <div className="mt-1 text-xs text-[var(--muted-foreground)]">CEO Decisions Avoided</div>
+            <div className="mt-1 text-xs text-[var(--muted-foreground)]">Decisions Avoided</div>
           </div>
           <div>
             <div className="font-mono text-xl font-bold">$324.40</div>
@@ -317,7 +317,7 @@ export function EvidenceView() {
               <p className="text-[var(--muted-foreground)]">
                 The agent reviewed the relevant source data, extracted the key signals, and
                 produced a structured summary. Findings were cross-checked against existing
-                records before delivery to the CEO workspace.
+                records before delivery to the workspace.
               </p>
             </div>
 

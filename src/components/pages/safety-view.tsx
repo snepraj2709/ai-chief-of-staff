@@ -37,7 +37,7 @@ const BUDGET_ROWS = [
 const POLICIES = [
   {
     name: "Legal Exposure Actions",
-    description: "Any action with legal consequence requires CEO approval",
+    description: "Any action with legal consequence requires your approval",
   },
   {
     name: "Customer-Facing Communications",
@@ -50,7 +50,7 @@ const POLICIES = [
   },
   {
     name: "Production System Writes",
-    description: "Code deploys and database changes require CEO approval",
+    description: "Code deploys and database changes require your approval",
   },
   {
     name: "Confidential Data Sharing",
@@ -58,7 +58,7 @@ const POLICIES = [
   },
   {
     name: "Hiring & Firing Recommendations",
-    description: "All HR decisions require CEO approval",
+    description: "All HR decisions require your approval",
   },
 ]
 

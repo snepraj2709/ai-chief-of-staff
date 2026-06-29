@@ -36,8 +36,8 @@ export type NavItem = {
 export const navItems: NavItem[] = [
   {
     id: "dashboard",
-    label: "CEO Dashboard",
-    title: "CEO Clarity Dashboard",
+    label: "Dashboard",
+    title: "Clarity Dashboard",
     description: "Today's priorities, blockers, and AI activity at a glance",
     icon: LayoutDashboard,
   },
@@ -68,7 +68,7 @@ export const navItems: NavItem[] = [
   {
     id: "operating-brain",
     label: "Operating Brain",
-    title: "CEO Operating Brain",
+    title: "Cross-Agent Operating Brain",
     description: "The shared context, goals, and memory agents reason over",
     icon: Brain,
   },

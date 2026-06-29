@@ -108,7 +108,7 @@ export function Sidebar({ activeId, onNavigate }: SidebarProps) {
           </span>
           <div className="min-w-0 flex-1">
             <p className="truncate text-[11px] font-semibold text-foreground">You (Owner)</p>
-            <p className="truncate font-mono text-[10px] text-muted-foreground">CEO · Ops workspace</p>
+            <p className="truncate font-mono text-[10px] text-muted-foreground"> Ops workspace</p>
           </div>
           <button
             type="button"

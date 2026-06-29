@@ -4,7 +4,7 @@ interface TopBarProps {
   pageTitle?: string
 }
 
-export function TopBar({ pageTitle = "CEO Clarity Dashboard" }: TopBarProps) {
+export function TopBar({ pageTitle = "Clarity Dashboard" }: TopBarProps) {
   const today = new Date()
   const formatted = today.toLocaleDateString("en-US", {
     month: "short",

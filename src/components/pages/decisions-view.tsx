@@ -569,7 +569,7 @@ function AutoResolvedTable() {
     <section className="overflow-hidden rounded-xl border border-border bg-card">
       <div className="px-4 py-4 sm:px-5">
         <h2 className="text-base font-semibold text-foreground">Auto-resolved by AI CoS</h2>
-        <p className="mt-1 text-sm text-muted-foreground">No CEO input required - logged for audit</p>
+        <p className="mt-1 text-sm text-muted-foreground">No input required - logged for audit</p>
       </div>
       <div className="overflow-x-auto">
         <table className="w-full min-w-[780px]">
@@ -663,7 +663,7 @@ export function DecisionsView() {
         <div className="flex flex-wrap gap-2">
           <span className="inline-flex items-center gap-1.5 rounded-full border border-[#EF4444]/30 bg-[#EF4444]/10 px-3 py-1.5 text-sm font-semibold text-[#F87171]">
             <span className="h-1.5 w-1.5 rounded-full bg-[#EF4444] shadow-[0_0_8px_#EF4444]" />
-            Needs CEO: {pendingCount}
+            Needs Your Attention: {pendingCount}
           </span>
           <span className="inline-flex items-center gap-1.5 rounded-full border border-[#10B981]/30 bg-[#10B981]/10 px-3 py-1.5 text-sm font-semibold text-[#10B981]">
             <span className="h-1.5 w-1.5 rounded-full bg-[#10B981]" />

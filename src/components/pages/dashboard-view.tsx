@@ -113,7 +113,7 @@ function WorkstreamsTable() {
         <div>
           <h2 className="text-sm font-semibold text-foreground">Active Workstreams</h2>
           <p className="text-[11px] text-muted-foreground mt-0.5">
-            Agent-managed initiatives · sorted by CEO priority
+            Agent-managed initiatives · sorted by priority
           </p>
         </div>
         <button
@@ -581,7 +581,7 @@ export function DashboardView() {
         <div>
           <h1 className="text-xl font-bold tracking-tight text-foreground xl:text-2xl">AI Chief of Staff</h1>
           <p className="mt-0.5 text-sm text-muted-foreground">
-            {dayName} {monthDay} · Good morning. Here is what matters today.
+            {dayName} {monthDay} · Good morning Sneha.
           </p>
         </div>
         <div className="mt-1 flex flex-shrink-0 flex-wrap items-center gap-2">

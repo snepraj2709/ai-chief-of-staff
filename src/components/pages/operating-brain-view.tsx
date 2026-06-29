@@ -58,7 +58,7 @@ export function OperatingBrainView() {
           model: "claude-sonnet-4-6",
           max_tokens: 1000,
           system:
-            "You are an AI Chief of Staff for a B2B SaaS startup CEO. Convert raw CEO input into a structured Operating Brief. Respond ONLY with valid JSON. No markdown. No preamble. No backticks. Schema: { goal: string, success_metric: string, urgency: 'HIGH'|'MEDIUM'|'LOW', agents_needed: string[], open_decisions: string[], risks: string[], workstreams: Array<{ name: string, owner: string, agents: string[] }>, filtered_noise: string[] }",
+            "You are an AI Chief of Staff for a B2B SaaS startup. Convert raw input into a structured Operating Brief. Respond ONLY with valid JSON. No markdown. No preamble. No backticks. Schema: { goal: string, success_metric: string, urgency: 'HIGH'|'MEDIUM'|'LOW', agents_needed: string[], open_decisions: string[], risks: string[], workstreams: Array<{ name: string, owner: string, agents: string[] }>, filtered_noise: string[] }",
           messages: [{ role: "user", content: userInput }],
         }),
       })
@@ -87,7 +87,7 @@ export function OperatingBrainView() {
 
   return (
     <div className="grid h-full grid-cols-2 gap-6">
-      {/* LEFT PANEL: CEO Input */}
+      {/* LEFT PANEL: User Input */}
       <Card className="flex h-full flex-col bg-[var(--card)] border-[var(--border)] p-6">
         <p className="mb-2 text-sm font-semibold text-[var(--foreground)]">Drop anything here</p>
         <Textarea
