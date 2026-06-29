@@ -12,7 +12,7 @@ import {
 
 function PrioritiesCard() {
   return (
-    <div className="flex flex-col gap-3 rounded-xl border border-border bg-card px-4 py-4">
+    <div className="flex flex-col gap-2 rounded-xl border border-border bg-card px-4 py-3">
       <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
         Top 3 Priorities
       </span>
@@ -44,11 +44,11 @@ function BigStatCard({
   valueColor: string
 }) {
   return (
-    <div className="flex flex-col gap-2 rounded-xl border border-border bg-card px-4 py-4">
+    <div className="flex flex-col gap-1.5 rounded-xl border border-border bg-card px-4 py-3">
       <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
         {label}
       </span>
-      <span className={`font-mono text-3xl font-bold leading-none ${valueColor}`}>{value}</span>
+      <span className={`font-mono text-2xl font-bold leading-none xl:text-3xl ${valueColor}`}>{value}</span>
       <span className="font-mono text-[10px] text-muted-foreground">{caption}</span>
     </div>
   )
@@ -106,8 +106,8 @@ const WORKSTREAMS: Workstream[] = [
 
 function WorkstreamsTable() {
   return (
-    <div className="flex flex-col rounded-xl border border-border bg-card overflow-hidden">
-      <div className="flex items-center justify-between gap-2 px-5 py-4 border-b border-border">
+    <div className="flex h-full min-h-0 flex-col overflow-hidden rounded-xl border border-border bg-card">
+      <div className="flex shrink-0 items-center justify-between gap-2 border-b border-border px-4 py-3">
         <div>
           <h2 className="text-sm font-semibold text-foreground">Active Workstreams</h2>
           <p className="text-[11px] text-muted-foreground mt-0.5">
@@ -123,14 +123,14 @@ function WorkstreamsTable() {
         </button>
       </div>
 
-      <div className="overflow-x-auto">
+      <div className="min-h-0 overflow-x-auto">
         <table className="w-full">
           <thead>
             <tr className="border-b border-border">
               {["Priority", "Workstream", "Owner", "Agents", "Status", "Action"].map((h) => (
                 <th
                   key={h}
-                  className="px-5 py-2.5 text-left font-semibold uppercase tracking-widest text-[10px] text-muted-foreground"
+                  className="px-4 py-2 text-left font-semibold uppercase tracking-widest text-[10px] text-muted-foreground"
                 >
                   {h}
                 </th>
@@ -143,13 +143,13 @@ function WorkstreamsTable() {
                 key={ws.name}
                 className="border-b border-border last:border-0 hover:bg-secondary/30 transition-colors"
               >
-                <td className="px-5 py-3">
+                <td className="px-4 py-2">
                   <span className="font-mono text-xs font-bold text-primary">{ws.priority}</span>
                 </td>
-                <td className="px-5 py-3">
+                <td className="px-4 py-2">
                   <span className="text-sm font-medium text-foreground">{ws.name}</span>
                 </td>
-                <td className="px-5 py-3">
+                <td className="px-4 py-2">
                   <div className="flex items-center gap-2">
                     <span
                       className={`flex h-6 w-6 items-center justify-center rounded-full text-[10px] font-bold text-white ${ws.ownerColor}`}
@@ -159,7 +159,7 @@ function WorkstreamsTable() {
                     <span className="text-xs text-foreground">{ws.ownerName}</span>
                   </div>
                 </td>
-                <td className="px-5 py-3">
+                <td className="px-4 py-2">
                   <div className="flex items-center gap-1.5">
                     <span className="text-xs text-foreground">{ws.agentCount} agents</span>
                     <span
@@ -167,7 +167,7 @@ function WorkstreamsTable() {
                     />
                   </div>
                 </td>
-                <td className="px-5 py-3">
+                <td className="px-4 py-2">
                   {ws.status === "on" ? (
                     <span className="inline-flex items-center gap-1 rounded-md border border-[#10B981]/30 bg-[#10B981]/10 px-2 py-0.5 font-mono text-[10px] font-bold text-[#10B981]">
                       <span className="h-1.5 w-1.5 rounded-full bg-[#10B981]" />
@@ -180,7 +180,7 @@ function WorkstreamsTable() {
                     </span>
                   )}
                 </td>
-                <td className="px-5 py-3">
+                <td className="px-4 py-2">
                   {ws.action === "view" ? (
                     <button
                       type="button"
@@ -205,7 +205,7 @@ function WorkstreamsTable() {
         </table>
       </div>
 
-      <div className="px-5 py-3 border-t border-border">
+      <div className="shrink-0 border-t border-border px-4 py-2">
         <span className="font-mono text-[10px] text-muted-foreground">
           3 active workstreams · 6 total agents deployed · last synced 2 min ago
         </span>
@@ -279,7 +279,7 @@ const BLOCKERS: Blocker[] = [
 ]
 
 const BLOCKER_CARD_CLASS =
-  "flex min-h-[150px] basis-full shrink-0 snap-start flex-col rounded-xl border border-border bg-card px-4 py-4 md:basis-[calc((100%_-_1rem)/2)] xl:basis-[calc((100%_-_2rem)/3)]"
+  "flex h-full min-h-0 basis-full shrink-0 snap-start flex-col rounded-xl border border-border bg-card px-4 py-3 md:basis-[calc((100%_-_1rem)/2)] xl:basis-[calc((100%_-_2rem)/3)]"
 
 function BlockerLane() {
   const [activeFilter, setActiveFilter] = useState<BlockerFilter>("all")
@@ -346,15 +346,15 @@ function BlockerLane() {
   }
 
   return (
-    <section className="flex flex-col gap-4">
-      <div className="flex items-center justify-between gap-3">
+    <section className="flex h-full min-h-0 flex-col gap-2">
+      <div className="flex shrink-0 items-center justify-between gap-3">
         <h2 className="text-sm font-semibold text-foreground">Blocker Lane</h2>
         <span className="rounded-md border border-border bg-card px-2 py-0.5 font-mono text-[10px] font-bold text-muted-foreground">
           {BLOCKERS.length} OPEN
         </span>
       </div>
 
-      <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-6">
+      <div className="grid shrink-0 grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-6">
         {BLOCKER_FILTERS.map((filter) => {
           const selected = activeFilter === filter.id
 
@@ -363,7 +363,7 @@ function BlockerLane() {
               key={filter.id}
               type="button"
               onClick={() => setActiveFilter(filter.id)}
-              className={`min-h-10 rounded-full border px-3 text-xs font-semibold transition-colors ${
+              className={`min-h-8 rounded-full border px-3 text-xs font-semibold transition-colors ${
                 selected
                   ? "border-primary bg-primary text-primary-foreground"
                   : "border-border bg-background text-foreground hover:border-primary/40 hover:bg-secondary/40"
@@ -375,7 +375,7 @@ function BlockerLane() {
         })}
       </div>
 
-      <div className="relative">
+      <div className="relative min-h-0 flex-1">
         {carouselState.hasOverflow && (
           <>
             <button
@@ -401,7 +401,7 @@ function BlockerLane() {
 
         <div
           ref={trackRef}
-          className="flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          className="flex h-full snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         >
           {visibleBlockers.length > 0 ? (
             <>
@@ -416,10 +416,10 @@ function BlockerLane() {
                   >
                     {blocker.tagLabel}
                   </span>
-                  <h3 className="mt-3 text-sm font-semibold leading-snug text-foreground">
+                  <h3 className="mt-2 text-sm font-semibold leading-snug text-foreground">
                     {blocker.title}
                   </h3>
-                  <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
+                  <p className="mt-1.5 line-clamp-2 text-xs leading-relaxed text-muted-foreground">
                     {blocker.body}
                   </p>
                   <button
@@ -458,12 +458,12 @@ export function DashboardView() {
   const monthDay = today.toLocaleDateString("en-US", { month: "short", day: "numeric" })
 
   return (
-    <div className="flex flex-col gap-5 p-6">
+    <div className="flex h-full min-h-0 flex-col overflow-y-auto p-4 lg:overflow-hidden xl:p-5">
       {/* Page header */}
-      <div className="flex items-start justify-between gap-4">
+      <div className="flex shrink-0 items-start justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-foreground">AI Chief of Staff</h1>
-          <p className="mt-1 text-sm text-muted-foreground">
+          <h1 className="text-xl font-bold tracking-tight text-foreground xl:text-2xl">AI Chief of Staff</h1>
+          <p className="mt-0.5 text-sm text-muted-foreground">
             {dayName} {monthDay} · Good morning. Here is what matters today.
           </p>
         </div>
@@ -486,7 +486,7 @@ export function DashboardView() {
       </div>
 
       {/* Stat cards */}
-      <div className="grid grid-cols-5 gap-3">
+      <div className="mt-4 grid shrink-0 grid-cols-5 gap-3">
         <PrioritiesCard />
         <BigStatCard
           label="Decisions Needed"
@@ -515,7 +515,7 @@ export function DashboardView() {
       </div>
 
       {/* Active workstreams and blockers */}
-      <div className="flex flex-col gap-5">
+      <div className="mt-4 grid min-h-0 flex-1 grid-rows-[minmax(0,1.08fr)_minmax(0,0.92fr)] gap-3">
         <WorkstreamsTable />
         <BlockerLane />
       </div>
