@@ -1,4 +1,12 @@
-import { Zap, Plus, Eye, TriangleAlert as AlertTriangle } from "lucide-react"
+import { useEffect, useRef, useState } from "react"
+import {
+  ChevronLeft,
+  ChevronRight,
+  Zap,
+  Plus,
+  Eye,
+  TriangleAlert as AlertTriangle,
+} from "lucide-react"
 
 // ─── Stat Cards ──────────────────────────────────────────────────────────────
 
@@ -208,68 +216,237 @@ function WorkstreamsTable() {
 
 // ─── Blocker Lane ────────────────────────────────────────────────────────────
 
-const BLOCKERS = [
+type BlockerType =
+  | "missing-context"
+  | "cross-agent"
+  | "decision-needed"
+  | "budget"
+  | "safety"
+
+type BlockerFilter = "all" | BlockerType
+
+interface Blocker {
+  type: BlockerType
+  tagLabel: string
+  title: string
+  body: string
+  actionLabel: string
+  accentClass: string
+  tagClass: string
+  buttonClass: string
+}
+
+const BLOCKER_FILTERS: { id: BlockerFilter; label: string }[] = [
+  { id: "all", label: "All" },
+  { id: "missing-context", label: "Missing Context" },
+  { id: "cross-agent", label: "Cross-Agent" },
+  { id: "decision-needed", label: "Decision Needed" },
+  { id: "budget", label: "Budget" },
+  { id: "safety", label: "Safety" },
+]
+
+const BLOCKERS: Blocker[] = [
   {
     type: "missing-context",
     tagLabel: "Missing Context",
-    tagClass: "bg-[#F59E0B]/10 border border-[#F59E0B]/30 text-[#F59E0B]",
-    body: "Finance agent needs Q2 actuals from Raj M.",
-    actionLabel: "Provide context",
-    actionClass: "text-[#F59E0B]",
+    title: "Q2 Actuals Missing",
+    body: "Finance Agent needs Raj M.'s final Q2 actuals before the budget model can close.",
+    actionLabel: "Provide",
+    accentClass: "border-l-[#F59E0B]",
+    tagClass: "bg-amber-50 text-[#F59E0B]",
+    buttonClass: "hover:border-[#F59E0B]/50 hover:text-[#FCD34D]",
   },
   {
     type: "cross-agent",
-    tagLabel: "Cross-Agent Conflict",
-    tagClass: "bg-[#EF4444]/10 border border-[#EF4444]/30 text-[#EF4444]",
-    body: "Legal and Ops agents have conflicting timelines on vendor NDA.",
-    actionLabel: "Provide context",
-    actionClass: "text-[#EF4444]",
+    tagLabel: "Cross-Agent",
+    title: "CS Agent ↔ Legal Agent",
+    body: "Contract threshold dispute — Finance says $50K limit, Legal says $10K.",
+    actionLabel: "Resolve",
+    accentClass: "border-l-[#EF4444]",
+    tagClass: "bg-red-50 text-[#EF4444]",
+    buttonClass: "hover:border-[#EF4444]/50 hover:text-[#FCA5A5]",
   },
   {
     type: "decision-needed",
     tagLabel: "Decision Needed",
-    tagClass: "bg-[#EF4444]/10 border border-[#EF4444]/30 text-[#EF4444]",
-    body: "Series B valuation cap: approve redlines or counter?",
-    actionLabel: "Resolve now",
-    actionClass: "text-[#EF4444]",
+    title: "ICP Definition Blocked",
+    body: "Marketing Agent cannot proceed. ICP definition required before execution.",
+    actionLabel: "Decide",
+    accentClass: "border-l-[#F59E0B]",
+    tagClass: "bg-amber-50 text-[#F59E0B]",
+    buttonClass: "hover:border-[#F59E0B]/50 hover:text-[#FCD34D]",
   },
 ]
 
+const BLOCKER_CARD_CLASS =
+  "flex min-h-[150px] basis-full shrink-0 snap-start flex-col rounded-xl border border-border bg-card px-4 py-4 md:basis-[calc((100%_-_1rem)/2)] xl:basis-[calc((100%_-_2rem)/3)]"
+
 function BlockerLane() {
+  const [activeFilter, setActiveFilter] = useState<BlockerFilter>("all")
+  const trackRef = useRef<HTMLDivElement>(null)
+  const [carouselState, setCarouselState] = useState({
+    hasOverflow: false,
+    canScrollPrevious: false,
+    canScrollNext: false,
+  })
+  const visibleBlockers =
+    activeFilter === "all"
+      ? BLOCKERS
+      : BLOCKERS.filter((blocker) => blocker.type === activeFilter)
+  const activeLabel =
+    BLOCKER_FILTERS.find((filter) => filter.id === activeFilter)?.label ?? "All"
+
+  useEffect(() => {
+    const track = trackRef.current
+
+    if (!track) {
+      return
+    }
+
+    const updateCarouselState = () => {
+      const maxScroll = track.scrollWidth - track.clientWidth
+
+      setCarouselState({
+        hasOverflow: maxScroll > 2,
+        canScrollPrevious: track.scrollLeft > 2,
+        canScrollNext: track.scrollLeft < maxScroll - 2,
+      })
+    }
+
+    track.scrollTo({ left: 0 })
+    const frame = window.requestAnimationFrame(updateCarouselState)
+    const resizeObserver = new ResizeObserver(updateCarouselState)
+
+    resizeObserver.observe(track)
+    track.addEventListener("scroll", updateCarouselState, { passive: true })
+
+    return () => {
+      window.cancelAnimationFrame(frame)
+      resizeObserver.disconnect()
+      track.removeEventListener("scroll", updateCarouselState)
+    }
+  }, [activeFilter, visibleBlockers.length])
+
+  const moveCarousel = (direction: -1 | 1) => {
+    const track = trackRef.current
+
+    if (!track) {
+      return
+    }
+
+    const firstCard = track.querySelector<HTMLElement>("[data-blocker-card]")
+    const trackStyles = window.getComputedStyle(track)
+    const gap = Number.parseFloat(trackStyles.columnGap || trackStyles.gap || "0")
+    const cardWidth = firstCard?.getBoundingClientRect().width ?? track.clientWidth
+
+    track.scrollBy({
+      left: direction * (cardWidth + (Number.isNaN(gap) ? 0 : gap)),
+      behavior: "smooth",
+    })
+  }
+
   return (
-    <div className="flex flex-col rounded-xl border border-border bg-card overflow-hidden">
-      <div className="flex items-start justify-between gap-2 px-4 py-4 border-b border-border">
-        <div>
-          <h2 className="text-sm font-semibold text-foreground">Blocker Lane</h2>
-          <p className="text-[11px] text-muted-foreground mt-0.5">Requires CEO resolution</p>
-        </div>
-        <span className="rounded-md bg-[#EF4444]/15 px-2 py-0.5 font-mono text-[10px] font-bold text-[#EF4444]">
-          3 OPEN
+    <section className="flex flex-col gap-4">
+      <div className="flex items-center justify-between gap-3">
+        <h2 className="text-sm font-semibold text-foreground">Blocker Lane</h2>
+        <span className="rounded-md border border-border bg-card px-2 py-0.5 font-mono text-[10px] font-bold text-muted-foreground">
+          {BLOCKERS.length} OPEN
         </span>
       </div>
 
-      <div className="flex flex-col gap-3 p-4">
-        {BLOCKERS.map((blocker) => (
-          <div
-            key={blocker.type}
-            className="rounded-lg border border-border bg-background p-3 flex flex-col gap-2"
-          >
-            <span
-              className={`inline-flex w-fit items-center rounded-md px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${blocker.tagClass}`}
+      <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-6">
+        {BLOCKER_FILTERS.map((filter) => {
+          const selected = activeFilter === filter.id
+
+          return (
+            <button
+              key={filter.id}
+              type="button"
+              onClick={() => setActiveFilter(filter.id)}
+              className={`min-h-10 rounded-full border px-3 text-xs font-semibold transition-colors ${
+                selected
+                  ? "border-primary bg-primary text-primary-foreground"
+                  : "border-border bg-background text-foreground hover:border-primary/40 hover:bg-secondary/40"
+              }`}
             >
-              {blocker.tagLabel}
-            </span>
-            <p className="text-xs text-foreground leading-relaxed">{blocker.body}</p>
+              {filter.label}
+            </button>
+          )
+        })}
+      </div>
+
+      <div className="relative">
+        {carouselState.hasOverflow && (
+          <>
             <button
               type="button"
-              className={`text-[11px] font-semibold text-left transition-opacity hover:opacity-70 ${blocker.actionClass}`}
+              aria-label="Previous blockers"
+              disabled={!carouselState.canScrollPrevious}
+              onClick={() => moveCarousel(-1)}
+              className="absolute left-2 top-1/2 z-10 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full border border-border bg-background/90 text-foreground shadow-lg shadow-background/30 transition-colors hover:bg-secondary disabled:pointer-events-none disabled:opacity-35"
             >
-              {blocker.actionLabel} →
+              <ChevronLeft className="h-4 w-4" />
             </button>
-          </div>
-        ))}
+            <button
+              type="button"
+              aria-label="Next blockers"
+              disabled={!carouselState.canScrollNext}
+              onClick={() => moveCarousel(1)}
+              className="absolute right-2 top-1/2 z-10 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full border border-border bg-background/90 text-foreground shadow-lg shadow-background/30 transition-colors hover:bg-secondary disabled:pointer-events-none disabled:opacity-35"
+            >
+              <ChevronRight className="h-4 w-4" />
+            </button>
+          </>
+        )}
+
+        <div
+          ref={trackRef}
+          className="flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        >
+          {visibleBlockers.length > 0 ? (
+            <>
+              {visibleBlockers.map((blocker) => (
+                <div
+                  key={blocker.type}
+                  data-blocker-card
+                  className={`${BLOCKER_CARD_CLASS} items-start border-l-1 ${blocker.accentClass}`}
+                >
+                  <span
+                    className={`inline-flex w-fit items-center rounded-full px-2.5 py-1 text-xs font-semibold ${blocker.tagClass}`}
+                  >
+                    {blocker.tagLabel}
+                  </span>
+                  <h3 className="mt-3 text-sm font-semibold leading-snug text-foreground">
+                    {blocker.title}
+                  </h3>
+                  <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
+                    {blocker.body}
+                  </p>
+                  <button
+                    type="button"
+                    className={`mt-auto inline-flex min-h-8 items-center rounded-xl border border-border bg-background px-3 text-xs font-semibold text-foreground transition-colors ${blocker.buttonClass}`}
+                  >
+                    {blocker.actionLabel}
+                  </button>
+                </div>
+              ))}
+            </>
+          ) : (
+            <div
+              data-blocker-card
+              className={`${BLOCKER_CARD_CLASS} items-center justify-center border-dashed text-center`}
+            >
+              <p className="text-sm font-medium text-foreground">
+                No {activeLabel.toLowerCase()} blockers
+              </p>
+              <p className="mt-1 text-xs text-muted-foreground">
+                This category is clear right now.
+              </p>
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </section>
   )
 }
 
@@ -337,8 +514,8 @@ export function DashboardView() {
         />
       </div>
 
-      {/* Bottom two-column layout */}
-      <div className="grid grid-cols-[1fr_300px] gap-4">
+      {/* Active workstreams and blockers */}
+      <div className="flex flex-col gap-5">
         <WorkstreamsTable />
         <BlockerLane />
       </div>
