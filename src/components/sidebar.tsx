@@ -27,13 +27,12 @@ export function Sidebar({ activeId, onNavigate }: SidebarProps) {
   return (
     <aside className="flex h-full w-[216px] flex-shrink-0 flex-col border-r border-border bg-sidebar">
       {/* Brand */}
-      <div className="flex items-center gap-2.5 border-b border-border px-4 py-3.5">
+      <div className="flex h-12 items-center gap-2.5 border-b border-border px-4">
         <div className="flex h-7 w-7 items-center justify-center rounded-full bg-primary shadow-[0_0_18px_rgba(99,102,241,0.35)]">
           <Cpu className="h-4 w-4 text-primary-foreground" aria-hidden="true" />
         </div>
         <div className="min-w-0">
           <p className="text-[13px] font-bold leading-tight text-foreground">AI Chief of Staff</p>
-          <p className="font-mono text-[10px] text-muted-foreground">v2.4.1 · prod</p>
         </div>
       </div>
 

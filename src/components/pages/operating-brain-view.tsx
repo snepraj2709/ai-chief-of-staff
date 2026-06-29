@@ -58,7 +58,7 @@ export function OperatingBrainView() {
           model: "claude-sonnet-4-6",
           max_tokens: 1000,
           system:
-            "You are an AI Chief of Staff for a B2B SaaS startup. Convert raw input into a structured Operating Brief. Respond ONLY with valid JSON. No markdown. No preamble. No backticks. Schema: { goal: string, success_metric: string, urgency: 'HIGH'|'MEDIUM'|'LOW', agents_needed: string[], open_decisions: string[], risks: string[], workstreams: Array<{ name: string, owner: string, agents: string[] }>, filtered_noise: string[] }",
+            "You are an Chief of Staff for a B2B SaaS startup. Convert raw input into a structured Operating Brief. Respond ONLY with valid JSON. No markdown. No preamble. No backticks. Schema: { goal: string, success_metric: string, urgency: 'HIGH'|'MEDIUM'|'LOW', agents_needed: string[], open_decisions: string[], risks: string[], workstreams: Array<{ name: string, owner: string, agents: string[] }>, filtered_noise: string[] }",
           messages: [{ role: "user", content: userInput }],
         }),
       })
@@ -93,7 +93,7 @@ export function OperatingBrainView() {
         <Textarea
           value={userInput}
           onChange={(e) => setUserInput(e.target.value)}
-          placeholder="Paste Slack threads, meeting notes, email snippets, voice-to-text summary, or raw thoughts. The AI Chief of Staff will extract structure from the noise."
+          placeholder="Paste Slack threads, meeting notes, email snippets, voice-to-text summary, or raw thoughts. The Chief of Staff will extract structure from the noise."
           className="min-h-[280px] flex-1 resize-none border-[var(--border)] bg-[var(--background)] text-[var(--foreground)]"
         />
         <Button
@@ -132,7 +132,7 @@ export function OperatingBrainView() {
             <Skeleton className="h-24 w-full" />
             <Skeleton className="h-24 w-full" />
             <p className="animate-pulse text-sm text-[var(--muted-foreground)]">
-              AI Chief of Staff is processing your input...
+              Chief of Staff is processing your input...
             </p>
           </div>
         )}

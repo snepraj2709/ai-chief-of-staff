@@ -16,9 +16,8 @@ export function TopBar({ pageTitle = "Clarity Dashboard" }: TopBarProps) {
     <header className="flex h-12 flex-shrink-0 items-center justify-between gap-4 border-b border-border bg-background px-5">
       {/* Left: date + page title */}
       <div className="flex items-center gap-2 min-w-0">
-        <span className="font-mono text-xs text-muted-foreground whitespace-nowrap">{formatted}</span>
-        <span className="text-muted-foreground/50 text-xs">·</span>
-        <span className="text-xs font-semibold text-foreground truncate">{pageTitle}</span>
+        {/* <span className="font-mono text-xs text-muted-foreground whitespace-nowrap">{formatted}</span>
+        <span className="text-muted-foreground/50 text-xs">·</span> */}
       </div>
 
       {/* Right: search + actions + status */}

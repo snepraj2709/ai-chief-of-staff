@@ -9,6 +9,7 @@ import {
   Eye,
   TriangleAlert as AlertTriangle,
 } from "lucide-react"
+import { TabToggle } from "@/components/ui/tab-toggle"
 
 // ─── Stat Cards ──────────────────────────────────────────────────────────────
 
@@ -247,13 +248,18 @@ const BLOCKER_FILTERS: { id: BlockerFilter; label: string }[] = [
   { id: "safety", label: "Safety" },
 ]
 
+const BLOCKER_FILTER_OPTIONS = BLOCKER_FILTERS.map(({ id, label }) => ({
+  value: id,
+  label,
+}))
+
 const BLOCKERS: Blocker[] = [
   {
     type: "missing-context",
     tagLabel: "Missing Context",
     title: "Q2 Actuals Missing",
     body: "Finance Agent needs Raj M.'s final Q2 actuals before the budget model can close.",
-    actionLabel: "Provide",
+    actionLabel: "Provide Context",
     accentClass: "border-l-[#F59E0B]",
     tagClass: "bg-amber-50 text-[#F59E0B]",
     buttonClass: "hover:border-[#F59E0B]/50 hover:text-[#FCD34D]",
@@ -263,7 +269,7 @@ const BLOCKERS: Blocker[] = [
     tagLabel: "Cross-Agent",
     title: "CS Agent ↔ Legal Agent",
     body: "Contract threshold dispute — Finance says $50K limit, Legal says $10K.",
-    actionLabel: "Resolve",
+    actionLabel: "Resolve Conflict",
     accentClass: "border-l-[#EF4444]",
     tagClass: "bg-red-50 text-[#EF4444]",
     buttonClass: "hover:border-[#EF4444]/50 hover:text-[#FCA5A5]",
@@ -350,32 +356,18 @@ function BlockerLane() {
   return (
     <section className="flex h-full min-h-0 flex-col gap-2">
       <div className="flex shrink-0 items-center justify-between gap-3">
-        <h2 className="text-sm font-semibold text-foreground">Blocker Lane</h2>
+        <h2 className="text-sm font-semibold text-foreground">Your Input needed</h2>
         <span className="rounded-md border border-border bg-card px-2 py-0.5 font-mono text-[10px] font-bold text-muted-foreground">
           {BLOCKERS.length} OPEN
         </span>
       </div>
 
-      <div className="grid shrink-0 grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-6">
-        {BLOCKER_FILTERS.map((filter) => {
-          const selected = activeFilter === filter.id
-
-          return (
-            <button
-              key={filter.id}
-              type="button"
-              onClick={() => setActiveFilter(filter.id)}
-              className={`min-h-8 rounded-full border px-3 text-xs font-semibold transition-colors ${
-                selected
-                  ? "border-primary bg-primary text-primary-foreground"
-                  : "border-border bg-background text-foreground hover:border-primary/40 hover:bg-secondary/40"
-              }`}
-            >
-              {filter.label}
-            </button>
-          )
-        })}
-      </div>
+      <TabToggle
+        aria-label="Filter blockers"
+        value={activeFilter}
+        options={BLOCKER_FILTER_OPTIONS}
+        onValueChange={setActiveFilter}
+      />
 
       <div className="relative min-h-0 flex-1">
         {carouselState.hasOverflow && (
@@ -579,10 +571,7 @@ export function DashboardView() {
       {/* Page header */}
       <div className="flex shrink-0 flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
         <div>
-          <h1 className="text-xl font-bold tracking-tight text-foreground xl:text-2xl">AI Chief of Staff</h1>
-          <p className="mt-0.5 text-sm text-muted-foreground">
-            {dayName} {monthDay} · Good morning Sneha.
-          </p>
+          <h1 className="text-xl font-bold tracking-tight text-foreground xl:text-2xl">Good morning, Sneha</h1>
         </div>
         <div className="mt-1 flex flex-shrink-0 flex-wrap items-center gap-2">
           <button

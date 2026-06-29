@@ -155,7 +155,7 @@ function TopSummary() {
       <div>
         <h1 className="text-xl font-bold leading-tight text-foreground xl:text-2xl">AI Employees</h1>
         <p className="mt-1.5 font-mono text-sm leading-tight text-[#8190A8] xl:text-base">
-          5 agents deployed · 1 at risk · reporting to AI Chief of Staff
+          5 agents deployed · 1 at risk · reporting to Chief of Staff
         </p>
       </div>
 
@@ -229,7 +229,7 @@ function LeaderNode() {
       className="absolute flex w-[196px] -translate-x-1/2 -translate-y-1/2 flex-col items-center rounded-2xl border-2 border-[#675CFF] bg-[#2B255F] px-4 py-3 text-center shadow-[0_0_24px_rgba(99,102,241,0.16)]"
       style={{ left: LEADER_POSITION.left, top: LEADER_POSITION.top }}
     >
-      <span className="text-sm font-bold leading-tight text-white">AI Chief of Staff</span>
+      <span className="text-sm font-bold leading-tight text-white">Chief of Staff</span>
       <span className="mt-2 flex items-center gap-2 font-mono text-xs font-semibold text-[#A7ACFF]">
         <span className="h-1.5 w-1.5 rounded-full bg-[#8290FF]" />
         Active · 24 actions today

@@ -673,17 +673,11 @@ export function DecisionsView() {
       </div>
 
       <Tabs defaultValue="needs-decision" className="mt-4">
-        <TabsList className="h-auto w-fit shrink-0 gap-1 rounded-full border border-[#25263A] bg-[#0B0B11] p-1.5 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.02)]">
-          <TabsTrigger
-            value="needs-decision"
-            className="h-11 flex-none rounded-full px-7 text-base font-bold text-muted-foreground transition-all duration-200 data-[state=active]:bg-[#252438] data-[state=active]:text-foreground data-[state=active]:shadow-[0_8px_22px_rgba(0,0,0,0.28)]"
-          >
+        <TabsList>
+          <TabsTrigger value="needs-decision">
             Needs Decision ({pendingCount})
           </TabsTrigger>
-          <TabsTrigger
-            value="auto-resolved"
-            className="h-11 flex-none rounded-full px-7 text-base font-bold text-muted-foreground transition-all duration-200 data-[state=active]:bg-[#252438] data-[state=active]:text-foreground data-[state=active]:shadow-[0_8px_22px_rgba(0,0,0,0.28)]"
-          >
+          <TabsTrigger value="auto-resolved">
             Auto-resolved ({autoResolvedDecisions.length})
           </TabsTrigger>
         </TabsList>
